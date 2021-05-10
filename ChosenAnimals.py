@@ -2,7 +2,7 @@
 # ChosenAnimals.py -  Contains the Classes for the chosen simulated animals
 #
 
-import Animal.py 
+from Animal import * 
 
 class bird(animal):
     def __init__(self, home):
