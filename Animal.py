@@ -5,10 +5,10 @@
 import random
 
 class animal():
-    def __init__(self, name, home, population):
+    def __init__(self, name, homeX, homeY):
         self.name = name
-        self.home = home #[x, y]
-        self.popu = population
+        self.homeX = homeX 
+        self.homeY = homeY
         self.gndr = random.randint(0, 1) # 0 is female, 1 is male
 
-        self.posn = [home[0], home[1]]
+        self.posn = [homeX, homeY]

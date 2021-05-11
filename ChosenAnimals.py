@@ -5,6 +5,9 @@
 from Animal import * 
 
 class bird(animal):
-    def __init__(self, home):
-        super().__init__(self, home)
+    def __init__(self, homeX, homeY):
+        super().__init__("bird", homeX, homeY)
         self.alti = 0
+
+    def pos(self):
+        return(self.posn)
