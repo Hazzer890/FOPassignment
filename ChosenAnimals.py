@@ -11,3 +11,8 @@ class bird(animal):
 
     def pos(self):
         return(self.posn)
+
+    def move(self):
+        self.posn[0] = self.posn[0] + 1
+        self.posn[1] = self.posn[1] + 1
+        return(self.posn)

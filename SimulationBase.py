@@ -9,13 +9,13 @@ class area():
     def __init__(self, xDim, yDim):
         self.xDim = xDim
         self.yDim = yDim
-        self.numF = 5   # 5 food sources
+        self.numF = 5   # 5 food sources per 500^2
         
         self.baseArea = np.zeros((self.xDim, self.yDim), dtype=int)
 
     def needs(self):
         # water generation
-        waterRad = random.randint(70, 140)
+        waterRad = random.randint(70, 100)
         EPSILON = 10
         water = [0,0]
         water[0] = random.randint(0, self.xDim-1)
@@ -28,7 +28,7 @@ class area():
                     self.baseArea[x, y] = 1
 
         # food generation 
-        for i in range(int(((self.xDim * self.yDim)/1000000)*self.numF)):
+        for i in range(int(((self.xDim * self.yDim)/250000)*self.numF)):
             x, y = random.randint(0, self.xDim-1), random.randint(0, self.yDim-1)
             if self.baseArea[x,y] == 1:
                 i = i-1
