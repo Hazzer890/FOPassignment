@@ -55,8 +55,11 @@ while True:
         if event.type == QUIT:
             pygame.quit()
             sys.exit()
-
-    ani = Animal1[i].move()
-    pygame.draw.rect(DISPLAYSURF, WHITE, (ani[0], ani[1], 2, 2), 3)
+    
+    for i in range(1):
+        lani = Animal1[i].pos()
+        pygame.draw.rect(DISPLAYSURF, BACKGC, (lani[0], lani[1], 7, 7), 2)
+        ani = Animal1[i].move(dimX, dimY, baseArea)
+        pygame.draw.rect(DISPLAYSURF, BLACK, (ani[0], ani[1], 7, 7), 2)
 
     FramePerSec.tick(FPS)
