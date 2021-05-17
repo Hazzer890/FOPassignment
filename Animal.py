@@ -5,16 +5,16 @@
 import random
 
 class animal():
-    def __init__(self, name, homeX, homeY, xdim, ydim, baseArea):
+    def __init__(self, name, home, xdim, ydim, baseArea):
         self.name = name
-        self.homeX = homeX 
-        self.homeY = homeY
+        self.home = home
         self.gndr = random.randint(0, 1) # 0 is female, 1 is male
         self.xdim = xdim
         self.ydim = ydim
         self.baseArea = baseArea
+        self.isDead = False
 
-        self.posn = [homeX, homeY]
+        self.posn = [home[0], home[1]]
 
         # generate distances to food
         self.listdist = []
