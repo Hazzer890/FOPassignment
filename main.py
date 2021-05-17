@@ -1,13 +1,11 @@
 import pygame, sys
 import random
-import time
 from pygame.locals import *
 from Wombat import *
 from Animal import *
 from SimulationBase import *
 
 # Variables
-numWom = 10
 dimX = 700
 dimY = 700
 Animal1 = []
@@ -70,7 +68,7 @@ while True:
     for i in range(len(Animal1)):
         lani = Animal1[i].pos()
         pygame.draw.rect(DISPLAYSURF, BACKGC, (lani[0], lani[1], 7, 7), 2)
-        ani = Animal1[i].move()
+        ani = Animal1[i].move(i)
         pygame.draw.rect(DISPLAYSURF, WOMBATC, (ani[0], ani[1], 7, 7), 2)
 
     FramePerSec.tick(FPS)
