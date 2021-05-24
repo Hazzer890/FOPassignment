@@ -9,7 +9,7 @@ class area():
     def __init__(self, xDim, yDim):
         self.xDim = xDim
         self.yDim = yDim
-        self.numF = 5   # 5 food sources per 500^2
+        self.numF = 15   # 5 food sources per 500^2
         
         self.baseArea = np.zeros((self.xDim, self.yDim), dtype=int)
 
