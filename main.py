@@ -1,22 +1,46 @@
-import pygame, sys, random
+import pygame
+import sys
+import random
 from pygame.locals import *
 from Animal import *
 from AnimalClasses import *
 from SimulationBase import *
 
+#input variables
+if len(sys.argv) < 6:
+    limit = 10
+    numWom = 15
+    numEmu = 15
+    numPoss = 15
+    numKangaroo = 15
+    numFoxes = 6
+    print('argv too short, usage: <limit> <# Wombats> <# Emus> <# Possums> <# Kangaroo> <# Foxes>')
+    print('Using default values: 10 15 15 15 15 6')
+else:
+    limit = int(sys.argv[1])
+    numWom = int(sys.argv[2])
+    numEmu = int(sys.argv[3])
+    numPoss = int(sys.argv[4])
+    numKangaroo = int(sys.argv[5])
+    numFoxes = int(sys.argv[6])
+fileName = "simulation"+str(limit)+str(numWom)+str(numEmu)+str(numPoss)+str(numKangaroo)+str(numFoxes)+".png"
+
 # Variables
 fps = 30
+running = True
+day = 0 
 dimX, dimY = 700, 700
 Wombats = []
 Emus = []
+Possums = []
 Kangaroos = []
 Foxes = []
 Foods = []
 Waters = []
 aniW = []
 aniE = []
+aniP= []
 aniK = []
-kangpos = []
 aniF = []
 time = 7.0
 
@@ -46,6 +70,8 @@ womimg = pygame.image.load('images/wombat.png')
 womimg.convert()
 emuimg = pygame.image.load('images/emu.png')
 emuimg.convert()
+possimg = pygame.image.load('images/possum.png')
+possimg.convert()
 kangimg = pygame.image.load('images/kangaroo.png')
 kangimg.convert()
 foximg = pygame.image.load('images/fox.png')
@@ -70,6 +96,15 @@ for i in range(numEmu):
         if baseArea[randXY[0],randXY[1]] != 1:
             yes = False
     Emus.append(emu(randXY, dimX, dimY, baseArea, fps))
+
+# Init Possum
+for i in range(numPoss):
+    yes = True
+    while yes:
+        randXY = [random.randint(50,dimX-50),  random.randint(50,dimY-50)]
+        if baseArea[randXY[0],randXY[1]] != 1:
+            yes = False
+    Possums.append(possum(randXY, dimX, dimY, baseArea, fps))
     
 # Init Kangaroo
 for i in range(numKangaroo):
@@ -98,7 +133,7 @@ for x in range(dimX):
             Foods.append((x,y))
 
 # Game Loop
-while True:
+while running:
     pygame.display.update()
     DISPLAY.fill(BACKGC)
     for event in pygame.event.get():
@@ -116,49 +151,57 @@ while True:
         if time > 6 and time < 22: Wombats[i].periodic(i)
         aniW = Wombats[i].posn
         DISPLAY.blit(womimg, (aniW[0], aniW[1]))
-        for i in range(numFoxes):
-            Foxes[i].sniff(aniW)
+        for z in range(numFoxes):
+            Foxes[z].sniff(aniW)
         # Check Wombat Interaction
-        for j in range(numWom):
-            if i < len(Wombats) and j < len(Wombats):
-                if Wombats[i].posn == Wombats[j-1].posn and i != j-1 and Wombats[i].canBreed():
-                    Wombats.append(wombat([(Wombats[j-1].posn[0]+Wombats[i].posn[0])/2, (Wombats[j-1].posn[1]+Wombats[i].posn[1])/2], dimX, dimY, baseArea, fps))
-                    Wombats[i].mate()
-                    Wombats[j-1].mate()
-                    numWom = numWom + 1
-                    break
+        for j in range(len(Wombats)):
+            if Wombats[i].posn == Wombats[j].posn and i != j and Wombats[i].canBreed():
+                numWom = numWom + 1
+                Wombats.append(wombat([(Wombats[j].posn[0]+Wombats[i].posn[0])/2, (Wombats[j].posn[1]+Wombats[i].posn[1])/2], dimX, dimY, baseArea, fps))
+                Wombats[i].mate()
+                Wombats[j].mate()
     #Draw Emus
     for i in range(numEmu-1):
         if time > 5 and time < 20: Emus[i].periodic(i)
         aniE = Emus[i].posn
         DISPLAY.blit(emuimg, (aniE[0], aniE[1]))
-        for i in range(numFoxes):
-            Foxes[i].sniff(aniE)
-        # Check Wombat Interaction
-        for j in range(numEmu):
-            if i < len(Emus) and j < len(Emus):
-                if Emus[i].posn == Emus[j-1].posn and i != j-1 and Emus[i].canBreed():
-                    Emus.append(emu([(Emus[j-1].posn[0]+Emus[i].posn[0])/2, (Emus[j-1].posn[1]+Emus[i].posn[1])/2], dimX, dimY, baseArea, fps))
-                    Emus[i].mate()
-                    Emus[j-1].mate()
-                    numEmu = numEmu + 1
-                    break
+        for z in range(numFoxes):
+            Foxes[z].sniff(aniE)
+        # Check Emu Interaction
+        for j in range(len(Emus)):
+            if Emus[i].posn == Emus[j].posn and i != j and Emus[i].canBreed():
+                numEmu = numEmu + 1
+                Emus.append(emu([(Emus[j].posn[0]+Emus[i].posn[0])/2, (Emus[j].posn[1]+Emus[i].posn[1])/2], dimX, dimY, baseArea, fps))
+                Emus[i].mate()
+                Emus[j].mate()
+    #Draw Possums
+    for i in range(numPoss-1):
+        if time < 6 or time > 19: Possums[i].periodic(i)
+        aniP = Possums[i].posn
+        DISPLAY.blit(possimg, (aniP[0], aniP[1]))
+        for z in range(numFoxes):
+            Foxes[z].sniff(aniP)
+        # Check Possum Interaction
+        for j in range(len(Possums)):
+            if Possums[i].posn == Possums[j].posn and i != j and Possums[i].canBreed():
+                numPoss = numPoss + 1
+                Possums.append(possum([(Possums[j].posn[0]+Possums[i].posn[0])/2, (Possums[j].posn[1]+Possums[i].posn[1])/2], dimX, dimY, baseArea, fps))
+                Possums[i].mate()
+                Possums[j].mate()
     #Draw kangaroos
     for i in range(numKangaroo):
         if time > 3 and time < 19:  Kangaroos[i].periodic(i)
         aniK = Kangaroos[i].posn
         DISPLAY.blit(kangimg, (aniK[0], aniK[1]))
-        for i in range(numFoxes):
-            Foxes[i].sniff(aniK)
+        for z in range(numFoxes):
+            Foxes[z].sniff(aniK)
         # Check Kangaroo Interaction
-        for j in range(numKangaroo):
-            if i < len(Kangaroos) and j < len(Kangaroos):
-                if Kangaroos[i].posn == Kangaroos[j-1].posn and i != j-1 and Kangaroos[i].canBreed():
-                    Kangaroos.append(kangaroo([(Kangaroos[j-1].posn[0]+Kangaroos[i].posn[0])/2, (Kangaroos[j-1].posn[1]+Kangaroos[i].posn[1])/2], dimX, dimY, baseArea, fps))
-                    Kangaroos[i].mate()
-                    Kangaroos[j-1].mate()
-                    numKangaroo = numKangaroo + 1
-                    break
+        for j in range(len(Kangaroos)):
+            if Kangaroos[i].posn == Kangaroos[j].posn and i != j and Kangaroos[i].canBreed():
+                numKangaroo = numKangaroo + 1
+                Kangaroos.append(kangaroo([(Kangaroos[j].posn[0]+Kangaroos[i].posn[0])/2, (Kangaroos[j].posn[1]+Kangaroos[i].posn[1])/2], dimX, dimY, baseArea, fps))
+                Kangaroos[i].mate()
+                Kangaroos[j].mate()
     #Draw Foxes
     for i in range(numFoxes):
         if time > 5 and time < 20: 
@@ -180,12 +223,12 @@ while True:
                 Wombats.pop(j)
                 numWom = numWom - 1
                 break
-        for j in range(numEmu):
-            if Foxes[i].posn == Emus[j].posn:
+        for j in range(numPoss):
+            if Foxes[i].posn == Possums[j].posn:
                 for z in range(numFoxes):
                     Foxes[z].foodCood = (-1000,-1000)
-                Emus.pop(j)
-                numEmu = numEmu - 1
+                Possums.pop(j)
+                numPoss = numPoss - 1
                 break
         for j in range(numKangaroo-1):
             if Foxes[i].posn == Kangaroos[j].posn:
@@ -214,6 +257,16 @@ while True:
                 print("Edeath")
         except:
             pass
+    #Kill Possums
+    for i in range(numPoss):
+        try:
+            if Possums[i].death():
+                aniP = Possums.pop(i).periodic(i)
+                numPoss = numPoss - 1
+                pygame.draw.rect(DISPLAY, BACKGC, (aniP[0]-5, aniP[1]-5, 17, 17), 0)
+                print("Pdeath")
+        except:
+            pass
     #Kill Kangaroos
     for i in range(numKangaroo):
         try:
@@ -236,11 +289,15 @@ while True:
             pass
     
     #Day/Night Cycle 
-    # if time >= 24: time = 0.0
-    # else: time += 0.05
-    # #Day/Night Visualisation
-    # if time > 19: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night - 0.009
-    # elif time < 5: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night + 0.009
-    # else: BACKGC, night = (159, 180, 112), 1.0
+    if time >= 24: time, day = 0.0, day + 1
+    else: time += 0.05
+    #Day/Night Visualisation
+    if time > 19: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night - 0.009
+    elif time < 5: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night + 0.009
+    else: BACKGC, night = (159, 180, 112), 1.0
 
+    if day >= limit and time > 7:
+        pygame.image.save(DISPLAY,(fileName))
+        running = False
+    
     FramePerSec.tick(FPS)
