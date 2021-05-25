@@ -115,7 +115,7 @@ class fox(animal):
 
     def death(self):
         self.isDead = self.isDead + random.randint(0,3)
-        if self.isDead > 1800:
+        if self.isDead > 1200:
             return(True)
 
 
