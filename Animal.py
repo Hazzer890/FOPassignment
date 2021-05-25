@@ -2,8 +2,13 @@
 # Animal.py - Contains the Animal Class and the involved funtions
 #
 
-import sys, random, numpy
+import sys
+import math
+import random
 from functools import lru_cache
+
+import numpy
+
 
 class animal():
     def __init__(self, name, home, xdim, ydim, baseArea, fps):
@@ -21,24 +26,26 @@ class animal():
         self.mating = True
         self.counter = 0
         self.cantMate = True
-        self.matingCooldown = 200
+        self.matingCooldown = 150
         self.fps = fps
 
         self.posn = [home[0], home[1]]
+        
+        if name != 'fox':
+            # generate distances to food
+            listdist = []
+            for x in range(self.xdim):
+                for y in range(self.ydim):
+                    if self.baseArea[x,y] == 2:
+                        listdist.append((x-abs(self.posn[0]))**2 + (y-abs(self.posn[1]))**2)
 
-        # generate distances to food
-        self.listdist = []
-        for x in range(self.xdim):
-            for y in range(self.ydim):
-                if self.baseArea[x,y] == 2:
-                    self.listdist.append((x-self.posn[0])**2 + (y-self.posn[1])**2)
-
-         # find smallest distance
-        for x in range(self.xdim):
-            for y in range(self.ydim):
-                if self.baseArea[x,y] == 2:
-                    if ((x-self.posn[0])**2 + (y-self.posn[1])**2) == min(self.listdist):
-                        self.foodCood = [x,y]
+             # find smallest distance
+            for x in range(self.xdim):
+                for y in range(self.ydim):
+                    if self.baseArea[x,y] == 2:
+                        if ((x-abs(self.posn[0]))**2 + (y-abs(self.posn[1]))**2) == min(listdist):
+                            self.foodCood = [x,y]
+        else: self.foodCood = (-1000,-1000)
 
     def pos(self):
         return(self.posn) # Returns Position when called
@@ -51,12 +58,12 @@ class animal():
             elif abs((self.foodCood[0]-self.posn[0])) == 0: self.posn[1] = self.posn[1] + ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))
             elif abs((self.foodCood[1]-self.posn[1])) == 0: self.posn[0] = self.posn[0] + ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))
             else:
+                if self.posn[0] < self.xdim and self.posn[1] < self.ydim:
+                    if (self.baseArea[int(self.posn[0]), int(self.posn[1])] == 1):
+                        self.posn[0] = self.posn[0] - ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))
+                        self.posn[1] = self.posn[1] - ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))
                 self.posn[0] = self.posn[0] + ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))
                 self.posn[1] = self.posn[1] + ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))
-                if (self.baseArea[int(self.posn[0]-1), int(self.posn[1]-1)] == 1):
-                    self.posn[0] = self.posn[0] - ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])+1))
-                    self.posn[1] = self.posn[1] - ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])+1))
-        
         elif self.looking == True and self.gndr == 1:
             #find closest female
             for i in range(len(tinder)): 
@@ -72,16 +79,15 @@ class animal():
                         self.posn[1] = self.posn[1] - ((self.closestFem[1]-self.posn[1])/abs((self.closestFem[1]-self.posn[1])))
                     self.posn[0] = self.posn[0] + ((self.closestFem[0]-self.posn[0])/abs((self.closestFem[0]-self.posn[0])))
                     self.posn[1] = self.posn[1] + ((self.closestFem[1]-self.posn[1])/abs((self.closestFem[1]-self.posn[1])))
-                   
         else:
             if self.gndr == 0 and self.mating:
                 tinder[form] = (self.posn[0], self.posn[1])
             #approach home
-            if abs((self.home[0]-self.posn[0])) == 0 and abs((self.home[1]-self.posn[1])) == 0:
+            if (self.home[0]-self.posn[0]) == 0 and (self.home[1]-self.posn[1]) == 0:
                 self.looking = True
-            elif abs((self.home[0]-self.posn[0])) == 0:
+            elif (self.home[0]-self.posn[0]) == 0:
                 self.posn[1] = self.posn[1] + ((self.home[1]-self.posn[1])/abs((self.home[1]-self.posn[1])))
-            elif abs((self.home[1]-self.posn[1])) == 0:
+            elif (self.home[1]-self.posn[1]) == 0:
                 self.posn[0] = self.posn[0] + ((self.home[0]-self.posn[0])/abs((self.home[0]-self.posn[0])))
             else:
                 self.posn[0] = self.posn[0] + ((self.home[0]-self.posn[0])/abs((self.home[0]-self.posn[0])))
