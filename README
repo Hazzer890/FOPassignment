@@ -1,0 +1,31 @@
+## Synopsis
+Simulation - The simulation of natural native wildlife in Yebble country with one introduced predator,
+
+## Contents
+README - readme file
+Main.py - Contains the code for the excecution of the simulation, including drawing visuals, initialising animals and checking for interaction.
+SimulationBase.py - Contains the area class and functions used to initialise the landscape of the simulation
+Animal.py - Parent class code for all animals, contains the functions for pathfinding and mating 
+AnimalClasses.py - Contains individual animal classes
+SimulationSweep.sh - Bash file for running parameter sweeps
+
+## Dependencies
+pygame - pip install pygame - https://www.pygame.org/
+sys
+math
+numpy
+random
+functools
+
+## Version information
+Complete version history available at https://github.com/Hazzer890/FOPassignment after completed grading
+07/5/21 - Initial version
+11/5/21 - Area simulation, basic animal generation
+12/5/21 - Animal movement enhanced to find food 
+13/5/21 - Lake avoiding implemented
+17/5/21 - Basic mating and partner pathfinding implemented
+18/5/21 - Initial Wombat version completed
+19/5/21 - Fixes for all code, functions as intended 
+22/5/21 - Basic images added for all viuals, Fox added to simulation as a predator
+24/5/21 - Day/Night cycle, Code optimisation, updated visuals, modified class structure
+25/5/21 - Parameter sweeps partly implemented, all code functions as intended, user input accepted

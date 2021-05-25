@@ -64,6 +64,9 @@ PREDATORC = (157, 6, 26)
 DISPLAY = pygame.display.set_mode((dimX,dimY))
 DISPLAY.fill(BACKGC)
 pygame.display.set_caption("Simulation Window")
+pygame.font.init()
+myfont = pygame.font.SysFont('Comic Sans MS', 30)
+
 
 #load images
 womimg = pygame.image.load('images/wombat.png')
@@ -291,7 +294,10 @@ while running:
     #Day/Night Cycle 
     if time >= 24: time, day = 0.0, day + 1
     else: time += 0.05
+    timeDisp = str(int(time)) + ':00'
     #Day/Night Visualisation
+    textsurface = myfont.render(timeDisp, False, (0, 0, 0))
+    DISPLAY.blit(textsurface,(10,10))
     if time > 19: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night - 0.009
     elif time < 5: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night + 0.009
     else: BACKGC, night = (159, 180, 112), 1.0
