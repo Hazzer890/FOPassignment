@@ -65,7 +65,8 @@ DISPLAY = pygame.display.set_mode((dimX,dimY))
 DISPLAY.fill(BACKGC)
 pygame.display.set_caption("Simulation Window")
 pygame.font.init()
-myfont = pygame.font.SysFont('Comic Sans MS', 30)
+timefont = pygame.font.SysFont('Comic Sans MS', 30)
+infofont = pygame.font.SysFont('Comic Sans MS', 18)
 
 
 #load images
@@ -296,11 +297,28 @@ while running:
     else: time += 0.05
     timeDisp = str(int(time)) + ':00'
     #Day/Night Visualisation
-    textsurface = myfont.render(timeDisp, False, (0, 0, 0))
-    DISPLAY.blit(textsurface,(10,10))
     if time > 19: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night - 0.009
     elif time < 5: BACKGC, WATERC, night = (159 * night, 180 * night, 112 * night), (92 * night, 114 * night, 170 * night), night + 0.009
     else: BACKGC, night = (159, 180, 112), 1.0
+    
+    textsurface = timefont.render(timeDisp, False, (0, 0, 0))
+    womT = "Wombats: " + str(numWom)
+    womsurface = infofont.render(womT, False, (0,0,0))
+    emuT = "Emus: " + str(numEmu)
+    emusurface = infofont.render(emuT, False, (0,0,0))
+    possT = "Possums: " + str(numPoss)
+    posssurface = infofont.render(possT, False, (0,0,0))
+    kangT = "Kangaroos: " + str(numKangaroo)
+    kangsurface = infofont.render(kangT, False, (0,0,0))
+    foxT = "Foxess: " + str(numFoxes)
+    foxsurface = infofont.render(foxT, False, (0,0,0))
+    
+    DISPLAY.blit(textsurface,(10,10))
+    DISPLAY.blit(womsurface,(10,40))
+    DISPLAY.blit(emusurface,(10,60))
+    DISPLAY.blit(posssurface,(10,80))
+    DISPLAY.blit(kangsurface,(10,100))
+    DISPLAY.blit(foxsurface,(10,120))
 
     if day >= limit and time > 7:
         pygame.image.save(DISPLAY,(fileName))

@@ -11,7 +11,7 @@ import numpy
 
 
 class animal():
-    def __init__(self, name, home, xdim, ydim, baseArea, fps):
+    def __init__(self, name, home, xdim, ydim, baseArea, fps, speed, hungerLim):
         self.name = name
         self.home = home
         self.gndr = random.randint(0, 1) # 0 is female, 1 is male
@@ -19,8 +19,10 @@ class animal():
         self.ydim = ydim
         self.baseArea = baseArea
         self.isDead = False
+        self.speed = speed
+        self.hungerLim = hungerLim
 
-        self.food = False
+        self.food = 0
         self.looking = False
         self.closestFem = (xdim/2,ydim/2)
         self.mating = True
@@ -52,18 +54,18 @@ class animal():
 
     def periodic(self, form, tinder):
         # Pathfinding Code
-        if self.food == False:
+        if self.food < self.hungerLim:
             #approach food
-            if abs((self.foodCood[0]-self.posn[0])) == 0 and abs((self.foodCood[1]-self.posn[1])) == 0: self.food, self.mating = True, True
+            if abs((self.foodCood[0]-self.posn[0])) == 0 and abs((self.foodCood[1]-self.posn[1])) == 0: self.food, self.mating = self.food + 1, True
             elif abs((self.foodCood[0]-self.posn[0])) == 0: self.posn[1] = self.posn[1] + ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))
             elif abs((self.foodCood[1]-self.posn[1])) == 0: self.posn[0] = self.posn[0] + ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))
             else:
                 if self.posn[0] < self.xdim and self.posn[1] < self.ydim:
                     if (self.baseArea[int(self.posn[0]), int(self.posn[1])] == 1):
-                        self.posn[0] = self.posn[0] - ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))
-                        self.posn[1] = self.posn[1] - ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))
-                self.posn[0] = self.posn[0] + ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))
-                self.posn[1] = self.posn[1] + ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))
+                        self.posn[0] = self.posn[0] - ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))* self.speed
+                        self.posn[1] = self.posn[1] - ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))* self.speed
+                self.posn[0] = self.posn[0] + ((self.foodCood[0]-self.posn[0])/abs((self.foodCood[0]-self.posn[0])))* self.speed
+                self.posn[1] = self.posn[1] + ((self.foodCood[1]-self.posn[1])/abs((self.foodCood[1]-self.posn[1])))* self.speed
         elif self.looking == True and self.gndr == 1:
             #find closest female
             for i in range(len(tinder)): 
@@ -75,10 +77,10 @@ class animal():
                 elif abs((self.closestFem[1]-self.posn[1])) == 0: self.posn[0] = self.posn[0] + ((self.closestFem[0]-self.posn[0])/abs((self.closestFem[0]-self.posn[0])))
                 else:
                     if (self.baseArea[int(self.posn[0]-1), int(self.posn[1]-1)] == 1):
-                        self.posn[0] = self.posn[0] - ((self.closestFem[0]-self.posn[0])/abs((self.closestFem[0]-self.posn[0])))
-                        self.posn[1] = self.posn[1] - ((self.closestFem[1]-self.posn[1])/abs((self.closestFem[1]-self.posn[1])))
-                    self.posn[0] = self.posn[0] + ((self.closestFem[0]-self.posn[0])/abs((self.closestFem[0]-self.posn[0])))
-                    self.posn[1] = self.posn[1] + ((self.closestFem[1]-self.posn[1])/abs((self.closestFem[1]-self.posn[1])))
+                        self.posn[0] = self.posn[0] - ((self.closestFem[0]-self.posn[0])/abs((self.closestFem[0]-self.posn[0])))* self.speed
+                        self.posn[1] = self.posn[1] - ((self.closestFem[1]-self.posn[1])/abs((self.closestFem[1]-self.posn[1])))* self.speed
+                    self.posn[0] = self.posn[0] + ((self.closestFem[0]-self.posn[0])/abs((self.closestFem[0]-self.posn[0])))* self.speed
+                    self.posn[1] = self.posn[1] + ((self.closestFem[1]-self.posn[1])/abs((self.closestFem[1]-self.posn[1])))* self.speed
         else:
             if self.gndr == 0 and self.mating:
                 tinder[form] = (self.posn[0], self.posn[1])
@@ -90,8 +92,8 @@ class animal():
             elif (self.home[1]-self.posn[1]) == 0:
                 self.posn[0] = self.posn[0] + ((self.home[0]-self.posn[0])/abs((self.home[0]-self.posn[0])))
             else:
-                self.posn[0] = self.posn[0] + ((self.home[0]-self.posn[0])/abs((self.home[0]-self.posn[0])))
-                self.posn[1] = self.posn[1] + ((self.home[1]-self.posn[1])/abs((self.home[1]-self.posn[1])))
+                self.posn[0] = self.posn[0] + ((self.home[0]-self.posn[0])/abs((self.home[0]-self.posn[0])))* self.speed
+                self.posn[1] = self.posn[1] + ((self.home[1]-self.posn[1])/abs((self.home[1]-self.posn[1])))* self.speed
 
         # randomize movement
         self.posn[0] = self.posn[0] + random.randint(-1, 1)
