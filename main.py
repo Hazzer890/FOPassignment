@@ -53,13 +53,7 @@ FramePerSec = pygame.time.Clock()
 
 # colour obj-1ects
 WATERC  = (92, 114, 170)
-FOODC   = (238, 185, 2)
 BACKGC = (159, 180, 112)
-WOMBATC = (98, 84, 65)
-EMUC = (102, 107, 120)
-KANGAROOC = (130, 106, 97)
-PREDATORC = (157, 6, 26)
-
 # Setup a 1000x1000 pixel display
 DISPLAY = pygame.display.set_mode((dimX,dimY))
 DISPLAY.fill(BACKGC)
